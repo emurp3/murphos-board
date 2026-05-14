@@ -4,6 +4,7 @@ supabase==2.3.4
 httpx==0.26.0
 python-dotenv==1.0.1
 pydantic==2.6.1
+pydantic-core==2.16.3
 pydantic-settings==2.2.1
 apscheduler==3.10.4
 websockets==12.0
