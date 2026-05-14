@@ -8,6 +8,13 @@ import StatusDot from '@/components/ui/StatusDot'
 import { getAgentReport, getRepoCommits } from '@/lib/api'
 import type { AgentReport, GitCommit as Commit } from '@/lib/types'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 const LEON_REPO = 'emurp3/leon-commerce'
 
 export default function LeonPage() {
@@ -44,10 +51,10 @@ export default function LeonPage() {
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="Active Listings" value={loading ? '—' : (report?.metrics?.active_listings as string ?? 'N/A')} accent="warning" />
-        <MetricCard label="Orders Today" value={loading ? '—' : (report?.metrics?.orders_today as string ?? 'N/A')} accent="success" />
-        <MetricCard label="Shirts in Pipeline" value={loading ? '—' : (report?.metrics?.shirts_pipeline as string ?? 'N/A')} accent="cyan" />
-        <MetricCard label="Revenue (MTD)" value={loading ? '—' : (report?.metrics?.revenue_mtd as string ?? 'N/A')} accent="success" />
+        <MetricCard label="Active Listings" value={loading ? '—' : m(report?.metrics, 'active_listings')} accent="warning" />
+        <MetricCard label="Orders Today" value={loading ? '—' : m(report?.metrics, 'orders_today')} accent="success" />
+        <MetricCard label="Shirts in Pipeline" value={loading ? '—' : m(report?.metrics, 'shirts_pipeline')} accent="cyan" />
+        <MetricCard label="Revenue (MTD)" value={loading ? '—' : m(report?.metrics, 'revenue_mtd')} accent="success" />
       </div>
 
       {/* Platform cards */}
