@@ -8,6 +8,13 @@ import StatusDot from '@/components/ui/StatusDot'
 import { getAgentReport } from '@/lib/api'
 import type { AgentReport } from '@/lib/types'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 export default function AOPage() {
   const [report, setReport] = useState<AgentReport | null>(null)
   const [loading, setLoading] = useState(true)
