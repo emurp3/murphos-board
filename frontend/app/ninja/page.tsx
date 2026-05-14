@@ -116,9 +116,9 @@ export default function NinjaPage() {
             <h2 className="text-xs font-mono text-gray-400 uppercase tracking-widest">Investigation Log — {report.period}</h2>
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">{report.summary}</p>
-          {report.metrics?.active_case_titles && (
+          {(report.metrics as any)?.active_case_titles && (
             <div className="mt-4 space-y-2">
-              {(report.metrics.active_case_titles as string[]).map((title, i) => (
+              {((report.metrics as any).active_case_titles as string[]).map((title, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs text-gray-400 font-mono">
                   <span className="text-danger">▶</span>
                   {title}
