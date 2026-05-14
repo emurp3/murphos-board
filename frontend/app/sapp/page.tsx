@@ -9,6 +9,13 @@ import { getAgentReport, getRepoCommits } from '@/lib/api'
 import type { AgentReport, GitCommit } from '@/lib/types'
 import { differenceInDays } from 'date-fns'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 const SAPP_REPO = 'emurp3/SAPP'
 const ALBUM_DEADLINE = new Date('2024-06-19')
 
@@ -56,18 +63,18 @@ export default function SAPPPage() {
         />
         <MetricCard
           label="Tracks Complete"
-          value={loading ? '—' : (report?.metrics?.tracks_complete as string ?? 'N/A')}
+          value={loading ? '—' : m(report?.metrics, 'tracks_complete')}
           accent="purple"
         />
         <MetricCard
           label="Movie Status"
-          value={loading ? '—' : (report?.metrics?.movie_status as string ?? 'N/A')}
+          value={loading ? '—' : m(report?.metrics, 'movie_status')}
           accent="cyan"
           sub="Gabe's Return"
         />
         <MetricCard
           label="Content Pipeline"
-          value={loading ? '—' : (report?.metrics?.pipeline_items as string ?? 'N/A')}
+          value={loading ? '—' : m(report?.metrics, 'pipeline_items')}
           accent="warning"
           sub="queued"
         />
