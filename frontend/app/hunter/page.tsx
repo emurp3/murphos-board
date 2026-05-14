@@ -8,6 +8,13 @@ import StatusDot from '@/components/ui/StatusDot'
 import { getAgentReport, getRepoCommits, getRepoIssues } from '@/lib/api'
 import type { AgentReport, GitCommit as Commit, GitIssue } from '@/lib/types'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 const HUNTER_REPO = 'emurp3/Hunter-AutoTrader'
 
 export default function HunterPage() {
@@ -55,10 +62,10 @@ export default function HunterPage() {
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="Active Strategies" value={loading ? '—' : (report?.metrics?.active_strategies as string ?? 'N/A')} accent="success" />
-        <MetricCard label="Open Positions" value={loading ? '—' : (report?.metrics?.open_positions as string ?? 'N/A')} accent="cyan" />
-        <MetricCard label="Today P&L" value={loading ? '—' : (report?.metrics?.daily_pnl as string ?? 'N/A')} accent="success" />
-        <MetricCard label="Congress Signals" value={loading ? '—' : (report?.metrics?.congress_signals as string ?? 'N/A')} accent="warning" />
+        <MetricCard label="Active Strategies" value={loading ? '—' : m(report?.metrics, 'active_strategies')} accent="success" />
+        <MetricCard label="Open Positions" value={loading ? '—' : m(report?.metrics, 'open_positions')} accent="cyan" />
+        <MetricCard label="Today P&L" value={loading ? '—' : m(report?.metrics, 'daily_pnl')} accent="success" />
+        <MetricCard label="Congress Signals" value={loading ? '—' : m(report?.metrics, 'congress_signals')} accent="warning" />
       </div>
 
       {/* Latest Report */}
