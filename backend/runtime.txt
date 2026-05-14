@@ -1,1 +1,1 @@
-python-3.11.9
+# Python version is set at repo root via .python-version
