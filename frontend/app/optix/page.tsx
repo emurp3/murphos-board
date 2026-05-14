@@ -8,6 +8,13 @@ import StatusDot from '@/components/ui/StatusDot'
 import { getAgentReport, getRepoCommits } from '@/lib/api'
 import type { AgentReport, GitCommit as Commit } from '@/lib/types'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 const OPTIX_REPO = 'emurp3/optix'
 
 export default function OptixPage() {
@@ -44,10 +51,10 @@ export default function OptixPage() {
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="Dissertation %" value={loading ? '—' : (report?.metrics?.dissertation_pct as string ?? 'N/A')} accent="purple" sub="complete" />
-        <MetricCard label="Chapters Done" value={loading ? '—' : (report?.metrics?.chapters_done as string ?? 'N/A')} accent="cyan" />
-        <MetricCard label="R&D Experiments" value={loading ? '—' : (report?.metrics?.rd_experiments as string ?? 'N/A')} accent="warning" />
-        <MetricCard label="Papers in Review" value={loading ? '—' : (report?.metrics?.papers_in_review as string ?? 'N/A')} accent="success" />
+        <MetricCard label="Dissertation %" value={loading ? '—' : m(report?.metrics, 'dissertation_pct')} accent="purple" sub="complete" />
+        <MetricCard label="Chapters Done" value={loading ? '—' : m(report?.metrics, 'chapters_done')} accent="cyan" />
+        <MetricCard label="R&D Experiments" value={loading ? '—' : m(report?.metrics, 'rd_experiments')} accent="warning" />
+        <MetricCard label="Papers in Review" value={loading ? '—' : m(report?.metrics, 'papers_in_review')} accent="success" />
       </div>
 
       {/* Dissertation progress bar */}
