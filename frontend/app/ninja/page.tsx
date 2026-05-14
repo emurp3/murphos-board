@@ -9,6 +9,13 @@ import { getAgentReport, delegateTask } from '@/lib/api'
 import type { AgentReport } from '@/lib/types'
 import clsx from 'clsx'
 
+// Safe metric accessor — avoids 'unknown' ReactNode errors
+function m(metrics: Record<string, unknown> | undefined, key: string): string {
+  const v = metrics?.[key];
+  if (v === null || v === undefined) return 'N/A';
+  return String(v);
+}
+
 export default function NinjaPage() {
   const [report, setReport] = useState<AgentReport | null>(null)
   const [loading, setLoading] = useState(true)
@@ -61,10 +68,10 @@ export default function NinjaPage() {
 
       {/* Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="Open Cases" value={loading ? '—' : (report?.metrics?.open_cases as string ?? 'N/A')} accent="danger" />
-        <MetricCard label="Closed Cases" value={loading ? '—' : (report?.metrics?.closed_cases as string ?? 'N/A')} accent="success" />
-        <MetricCard label="Leads Active" value={loading ? '—' : (report?.metrics?.active_leads as string ?? 'N/A')} accent="warning" />
-        <MetricCard label="Intel Reports" value={loading ? '—' : (report?.metrics?.intel_reports as string ?? 'N/A')} accent="cyan" />
+        <MetricCard label="Open Cases" value={loading ? '—' : m(report?.metrics, 'open_cases')} accent="danger" />
+        <MetricCard label="Closed Cases" value={loading ? '—' : m(report?.metrics, 'closed_cases')} accent="success" />
+        <MetricCard label="Leads Active" value={loading ? '—' : m(report?.metrics, 'active_leads')} accent="warning" />
+        <MetricCard label="Intel Reports" value={loading ? '—' : m(report?.metrics, 'intel_reports')} accent="cyan" />
       </div>
 
       {/* Open new case */}
@@ -116,9 +123,9 @@ export default function NinjaPage() {
             <h2 className="text-xs font-mono text-gray-400 uppercase tracking-widest">Investigation Log — {report.period}</h2>
           </div>
           <p className="text-sm text-gray-300 leading-relaxed">{report.summary}</p>
-          {(report.metrics as any)?.active_case_titles && (
+          {Array.isArray(report.metrics?.['active_case_titles']) && (
             <div className="mt-4 space-y-2">
-              {((report.metrics as any).active_case_titles as string[]).map((title, i) => (
+              {(report.metrics?.['active_case_titles'] as string[]).map((title, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs text-gray-400 font-mono">
                   <span className="text-danger">▶</span>
                   {title}
